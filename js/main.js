@@ -4,7 +4,7 @@ Vue.component('column', {
     <div class="content_form">
     <form @submit.prevent="addNote">
         <label for="card-name">Создайте свою заметку:</label>
-        <input id="card-name" type="text" v-model="noteName"><br>
+        <input  class="input" id="card-name" type="text" v-model="noteName"><br>
 
         <label for="card-list">Создайте пункты заметки:</label><br>
         <textarea id="card-list" v-model="checkText"></textarea><br>
@@ -12,48 +12,49 @@ Vue.component('column', {
         <button type="submit">Создать</button>
     </form>
     </div>
-    <div class="content">
-        <div class="left_column">
-            <h2 class="title_column">Новые</h2>
-            <div v-for="note in notesList" :key="note.id" class="note">
-                <h3>{{ note.title }}</h3>
-                <ul>
-                    <li v-for="item in note.items" :key="item.id">
-                        <input type="checkbox" v-model="item.completed" @change="moveCard(note)">
-                        <span :class="{ completed: item.completed }">{{ item.text }}</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="middle_column">
-            <h2 class="title_column">В процессе</h2>
-            <div v-for="note in notesListProgress" :key="note.id" class="note">
-                <h3>{{ note.title }}</h3>
-                <ul>
-                    <li v-for="item in note.items" :key="item.id">
-                        <input type="checkbox" v-model="item.completed" @change="moveCard(note)">
-                        <span :class="{ completed: item.completed }">{{ item.text }}</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="right_column">
-            <h2 class="title_column">Завершённые</h2>
-            <div v-for="note in notesListCompleted" :key="note.id" class="note">
-                <h3>{{ note.title }}</h3>
-                <ul>
-                    <li v-for="item in note.items" :key="item.id">
-                        <input type="checkbox" v-model="item.completed">
-                        <span :class="{ completed: item.completed }">{{ item.text}}</span>
-                    </li>
-                </ul>
-                <div v-if="note.completedDate">
-                    Последнее выполнение: {{ note.completedDate }}
+     <div class="content">
+            <div class="column">
+                <h2 class="title_column">Новые</h2>
+                <div v-for="note in notesList" :key="note.id" class="note">
+                    <h3>{{ note.title }}</h3>
+                    <div>
+                        <ul>
+                            <li v-for="item in note.items" :key="item.id">
+                                <input type="checkbox" v-model="item.completed" @change="moveCard(note)">
+                                <span :class="{ completed: item.completed }">{{ item.text }}</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-    
+            <div class="column">
+                <h2 class="title_column">В процессе</h2>
+                <div v-for="note in notesListProgress" :key="note.id" class="note">
+                    <h3>{{ note.title }}</h3>
+                    <ul>
+                        <li v-for="item in note.items" :key="item.id">
+                            <input type="checkbox" v-model="item.completed" @change="moveCard(note)">
+                            <span :class="{ completed: item.completed }">{{ item.text }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="column">
+                <h2 class="title_column">Завершённые</h2>
+                <div v-for="note in notesListCompleted" :key="note.id" class="note">
+                    <h3>{{ note.title }}</h3>
+                    <ul>
+                        <li v-for="item in note.items" :key="item.id">
+                            <input type="checkbox" v-model="item.completed">
+                            <span :class="{ completed: item.completed }">{{ item.text}}</span>
+                        </li>
+                    </ul>
+                    <div v-if="note.completedDate">
+                        Последнее выполнение: {{ note.completedDate }}
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
 </div>`,
 
     data() {

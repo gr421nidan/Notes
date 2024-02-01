@@ -3,12 +3,11 @@ Vue.component('column', {
 <div>
     <div class="content_form">
     <form @submit.prevent="addNote">
-        <label for="card-name">Создайте свою заметку:</label>
+        <label for="card-name">Создайте название заметки:</label>
         <input  class="input" id="card-name" type="text" v-model="noteName" :disabled="checkedCount===5 && !checked"><br>
 
         <label for="card-list">Создайте пункты заметки:</label><br>
         <textarea id="card-list" v-model="checkText" :disabled="checkedCount===5 && !checked"></textarea><br>
-
         <button type="submit" :disabled="checkedCount===5 && !checked">Создать</button>
     </form>
     </div>
@@ -49,7 +48,7 @@ Vue.component('column', {
                             <span :class="{ completed: item.completed }">{{ item.text}}</span>
                         </li>
                     </ul>
-                    <div v-if="note.completedDate">
+                    <div class="data" v-if="note.completedDate">
                         Завершено: {{ note.completedDate }}
                     </div>
                 </div>
@@ -100,15 +99,12 @@ Vue.component('column', {
                 const newNote = {
                     id: Date.now(),
                     title: this.noteName,
-                    items: this.checkText.split('\n').filter(item => item.trim() !== '').map(item => ({ text: item, completed: false }))
+                    items: this.checkText.split(" ").filter(item => item.trim() !== '').map(item => ({ text: item, completed: false }))
                 };
                 if (this.noteName !== '' && newNote.items.length >= 3 && newNote.items.length <= 5) {
                     this.notesList.push(newNote);
                 }
-                else alert("Введите минимум 3 задачи! \n Каждую на отдельной строке")
-                {
-
-                }
+                else alert("Введите минимум 3, но не больше 5 задач через пробел")
                 this.moveCard(newNote);
                 this.noteName = '';
                 this.checkText = '';

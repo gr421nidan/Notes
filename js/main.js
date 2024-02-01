@@ -74,6 +74,20 @@ Vue.component('column', {
                 localStorage.removeItem('notesList');
             }
         }
+        if (localStorage.getItem('notesListProgress')) {
+            try {
+                this.notesListProgress = JSON.parse(localStorage.getItem('notesListProgress'));
+            } catch(e) {
+                localStorage.removeItem('notesListProgress');
+            }
+        }
+        if (localStorage.getItem('notesListCompleted')) {
+            try {
+                this.notesListCompleted = JSON.parse(localStorage.getItem('notesListCompleted'));
+            } catch(e) {
+                localStorage.removeItem('notesListCompleted');
+            }
+        }
 
 
     },
@@ -108,9 +122,14 @@ Vue.component('column', {
 
             if (completedItems / totalItems > 0.5 && this.notesList.includes(note)) {
 
-                if(this.notesListProgress.length>=5){alert('Выполните задачи 2 столбца!')}
-                else {this.notesList.splice(this.notesList.indexOf(note), 1);
-                    this.notesListProgress.push(note);}
+                if(this.notesListProgress.length>=5) {
+                    alert('Выполните задачи 2 столбца!')
+                }
+                else {
+                    this.notesList.splice(this.notesList.indexOf(note), 1);
+                    this.notesListProgress.push(note);
+                    this.saveLocalStorage();
+                }
 
             }
 
@@ -118,12 +137,17 @@ Vue.component('column', {
                 this.notesListProgress.splice(this.notesListProgress.indexOf(note), 1);
                 this.notesListCompleted.push(note);
                 note.completedDate = new Date().toLocaleString();
+                this.saveLocalStorage();
 
             }
         },
         saveLocalStorage() {
             const parsed1 = JSON.stringify(this.notesList);
+            const parsed2 = JSON.stringify(this.notesListProgress);
+            const parsed3 = JSON.stringify(this.notesListCompleted);
             localStorage.setItem('notesList', parsed1);
+            localStorage.setItem('notesListProgress', parsed2);
+            localStorage.setItem('notesListCompleted', parsed3);
 
         },
 

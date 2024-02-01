@@ -66,6 +66,17 @@ Vue.component('column', {
             checkText: '',
         }
     },
+    mounted(){
+        if (localStorage.getItem('notesList')) {
+            try {
+                this.notesList = JSON.parse(localStorage.getItem('notesList'));
+            } catch(e) {
+                localStorage.removeItem('notesList');
+            }
+        }
+
+
+    },
 
     methods: {
 
@@ -86,8 +97,7 @@ Vue.component('column', {
                 this.moveCard(newNote);
                 this.noteName = '';
                 this.checkText = '';
-
-
+                this.saveLocalStorage();
             }
         },
 
@@ -111,6 +121,12 @@ Vue.component('column', {
 
             }
         },
+        saveLocalStorage() {
+            const parsed1 = JSON.stringify(this.notesList);
+            localStorage.setItem('notesList', parsed1);
+
+        },
+
     }
 });
 

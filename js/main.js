@@ -4,12 +4,12 @@ Vue.component('column', {
     <div class="content_form">
     <form @submit.prevent="addNote">
         <label for="card-name">Создайте свою заметку:</label>
-        <input  class="input" id="card-name" type="text" v-model="noteName"><br>
+        <input  class="input" id="card-name" type="text" v-model="noteName" :disabled="checkedCount===5 && !checked"><br>
 
         <label for="card-list">Создайте пункты заметки:</label><br>
-        <textarea id="card-list" v-model="checkText"></textarea><br>
+        <textarea id="card-list" v-model="checkText" :disabled="checkedCount===5 && !checked"></textarea><br>
 
-        <button type="submit">Создать</button>
+        <button type="submit" :disabled="checkedCount===5 && !checked">Создать</button>
     </form>
     </div>
      <div class="content">
@@ -20,7 +20,7 @@ Vue.component('column', {
                     <div>
                         <ul>
                             <li v-for="item in note.items" :key="item.id">
-                                <input type="checkbox" v-model="item.completed" @change="moveCard(note)">
+                                <input type="checkbox" v-model="item.completed" @change="moveCard(note)" :disabled="checkedCount===5 && !checked">
                                 <span :class="{ completed: item.completed }">{{ item.text }}</span>
                             </li>
                         </ul>
@@ -50,7 +50,7 @@ Vue.component('column', {
                         </li>
                     </ul>
                     <div v-if="note.completedDate">
-                        Последнее выполнение: {{ note.completedDate }}
+                        Завершено: {{ note.completedDate }}
                     </div>
                 </div>
             </div>
@@ -64,6 +64,7 @@ Vue.component('column', {
             notesListCompleted: [],
             noteName: '',
             checkText: '',
+            check: true,
         }
     },
     mounted(){
@@ -121,20 +122,19 @@ Vue.component('column', {
 
 
             if (completedItems / totalItems > 0.5 && this.notesList.includes(note)) {
-
-                if(this.notesListProgress.length>=5) {
-                    alert('Выполните задачи 2 столбца!')
+                if(this.notesListProgress.length ===5 && completedItems / totalItems > 0.5 && this.notesList.includes(note) ){
+                    this.check = false
                 }
                 else {
-                    this.notesList.splice(this.notesList.indexOf(note), 1);
-                    this.notesListProgress.push(note);
-                    this.saveLocalStorage();
-                }
+                        this.notesList.splice(this.notesList.indexOf(note), 1);
+                        this.notesListProgress.push(note);
+                        this.saveLocalStorage();
+                    }
 
             }
-
             else if (completedItems / totalItems === 1 && this.notesListProgress.includes(note)) {
                 this.notesListProgress.splice(this.notesListProgress.indexOf(note), 1);
+                this.check = true
                 this.notesListCompleted.push(note);
                 note.completedDate = new Date().toLocaleString();
                 this.saveLocalStorage();
@@ -151,6 +151,14 @@ Vue.component('column', {
 
         },
 
+    },
+    computed: {
+        checkedCount(){
+            return this.notesListProgress.length
+        },
+        checked(){
+            return this.check
+        }
     }
 });
 

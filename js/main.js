@@ -15,15 +15,42 @@ Vue.component('column', {
     <div class="content">
         <div class="left_column">
             <h2 class="title_column">Новые</h2>
-            
+            <div v-for="note in notesList" :key="note.id" class="note">
+                <h3>{{ note.title }}</h3>
+                <ul>
+                    <li v-for="item in note.items" :key="item.id">
+                        <input type="checkbox" v-model="item.completed" @change="moveCard(note)">
+                        <span :class="{ completed: item.completed }">{{ item.text }}</span>
+                    </li>
+                </ul>
+            </div>
         </div>
         <div class="middle_column">
             <h2 class="title_column">В процессе</h2>
-            
+            <div v-for="note in notesListProgress" :key="note.id" class="note">
+                <h3>{{ note.title }}</h3>
+                <ul>
+                    <li v-for="item in note.items" :key="item.id">
+                        <input type="checkbox" v-model="item.completed" @change="moveCard(note)">
+                        <span :class="{ completed: item.completed }">{{ item.text }}</span>
+                    </li>
+                </ul>
+            </div>
         </div>
         <div class="right_column">
             <h2 class="title_column">Завершённые</h2>
-            
+            <div v-for="note in notesListCompleted" :key="note.id" class="note">
+                <h3>{{ note.title }}</h3>
+                <ul>
+                    <li v-for="item in note.items" :key="item.id">
+                        <input type="checkbox" v-model="item.completed">
+                        <span :class="{ completed: item.completed }">{{ item.text}}</span>
+                    </li>
+                </ul>
+                <div v-if="note.completedDate">
+                    Последнее выполнение: {{ note.completedDate }}
+                </div>
+            </div>
     
         </div>
     </div>
@@ -55,6 +82,7 @@ Vue.component('column', {
                 {
 
                 }
+                this.moveCard(newNote);
                 this.noteName = '';
                 this.checkText = '';
 
@@ -62,6 +90,26 @@ Vue.component('column', {
             }
         },
 
+        moveCard(note) {
+            const totalItems = note.items.length;
+            const completedItems = note.items.filter(item => item.completed).length;
+
+
+            if (completedItems / totalItems > 0.5 && this.notesList.includes(note)) {
+
+                if(this.notesListProgress.length>=5){alert('Выполните задачи 2 столбца!')}
+                else {this.notesList.splice(this.notesList.indexOf(note), 1);
+                    this.notesListProgress.push(note);}
+
+            }
+
+            else if (completedItems / totalItems === 1 && this.notesListProgress.includes(note)) {
+                this.notesListProgress.splice(this.notesListProgress.indexOf(note), 1);
+                this.notesListCompleted.push(note);
+                note.completedDate = new Date().toLocaleString();
+
+            }
+        },
     }
 });
 

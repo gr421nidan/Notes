@@ -5,7 +5,13 @@ Vue.component('column', {
     <form @submit.prevent="addNote">
         <label for="card-name">Создайте название заметки:</label>
         <input  class="input" id="card-name" type="text" v-model="noteName" :disabled="checkedCount===5 && !checked"><br>
-
+        <label for="selected-num">Поставьте приоритет</label>
+        <select v-model="selected" id="selected-num">
+          <option disabled value="">Выберите один из вариантов</option>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+        </select><br>
         <label for="card-list">Создайте пункты заметки:</label><br>
         <input class="input" type="text" v-model="noteItems[0]" :disabled="checkedCount===5 && !checked"><br><br>
         <input class="input" type="text" v-model="noteItems[1]" :disabled="checkedCount===5 && !checked"><br><br>
@@ -25,6 +31,7 @@ Vue.component('column', {
             <div class="column">
                 <h2 class="title_column">Новые</h2>
                 <div v-for="note in notesList" :key="note.id" class="note">
+                    <span>{{ note.selected }}</span>
                     <h3>{{ note.title }}</h3>
                     <div>
                         <ul>
@@ -76,6 +83,7 @@ Vue.component('column', {
             selected: '',
             noteItems: ['','',''],
             addItems: [],
+
         }
     },
     mounted(){

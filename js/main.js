@@ -7,8 +7,18 @@ Vue.component('column', {
         <input  class="input" id="card-name" type="text" v-model="noteName" :disabled="checkedCount===5 && !checked"><br>
 
         <label for="card-list">Создайте пункты заметки:</label><br>
-        <textarea id="card-list" v-model="checkText" :disabled="checkedCount===5 && !checked"></textarea><br>
-        <button type="submit" :disabled="checkedCount===5 && !checked">Создать</button>
+        <input class="input" type="text" v-model="noteItems[0]" :disabled="checkedCount===5 && !checked"><br><br>
+        <input class="input" type="text" v-model="noteItems[1]" :disabled="checkedCount===5 && !checked"><br><br>
+        <input  class="input" type="text" v-model="noteItems[2]" :disabled="checkedCount===5 && !checked"><br><br>
+        
+        <div v-for="(item, index) in addItems" :key="index">
+            <input class="input" type="text" v-model="addItems[index]" :disabled="checkedCount===5 && !checked"><br><br>
+        </div>
+        <div class="button-row">
+            <button type="button" @click="addItem" v-if="addItems.length<2">Добавить пункт</button>
+            <button type="submit" :disabled="checkedCount===5 && !checked">Создать</button>
+        </div>
+        
     </form>
     </div>
      <div class="content">
@@ -62,8 +72,10 @@ Vue.component('column', {
             notesListProgress: [],
             notesListCompleted: [],
             noteName: '',
-            checkText: '',
             check: true,
+            selected: '',
+            noteItems: ['','',''],
+            addItems: [],
         }
     },
     mounted(){
@@ -95,20 +107,34 @@ Vue.component('column', {
     methods: {
 
         addNote() {
-            if (this.noteName !== '' && this.notesList.length < 3) {
-                const newNote = {
-                    id: Date.now(),
-                    title: this.noteName,
-                    items: this.checkText.split(" ").filter(item => item.trim() !== '').map(item => ({ text: item, completed: false }))
-                };
-                if (this.noteName !== '' && newNote.items.length >= 3 && newNote.items.length <= 5) {
+            if(this.noteName !== '' && this.notesList.length < 3 && this.noteItems.every(item=>item.trim() !=='')) {
+                const items = this.noteItems;
+                if (items.length >= 3 && items.length <= 5) {
+                    const allItems = [...items, ...this.addItems.filter(item => item.trim() !== '')];
+                    const newNote = {
+                        selected: this.selected,
+                        id: Date.now(),
+                        title: this.noteName,
+                        items: allItems.map(item => ({text: item, completed: false}))
+                    };
                     this.notesList.push(newNote);
+                    this.noteName = '';
+                    this.noteItems = ['', '', ''];
+                    this.addItems = [];
+                    this.moveCard(newNote);
+                    this.saveLocalStorage();
                 }
-                else alert("Введите минимум 3, но не больше 5 задач через пробел")
-                this.moveCard(newNote);
-                this.noteName = '';
-                this.checkText = '';
-                this.saveLocalStorage();
+            }else {
+                alert('Добавте пункты задачи')
+
+            }
+        },
+        addItem(){
+            if(this.addItems.length<2){
+                this.addItems.push('');
+            }
+            else{
+                alert('Больше нельзя добавить!')
             }
         },
 
@@ -117,8 +143,8 @@ Vue.component('column', {
             const completedItems = note.items.filter(item => item.completed).length;
 
 
-            if (completedItems / totalItems > 0.5 && this.notesList.includes(note)) {
-                if(this.notesListProgress.length ===5 && completedItems / totalItems > 0.5 && this.notesList.includes(note) ){
+            if (completedItems / totalItems >= 0.5 && this.notesList.includes(note)) {
+                if(this.notesListProgress.length ===5 && completedItems / totalItems >= 0.5 && this.notesList.includes(note) ){
                     this.check = false
                 }
                 else {

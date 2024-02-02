@@ -63,7 +63,7 @@ button{
     border: none;
     border-radius: 10px;
     height: 20px;
-    width: 100px;
+    width: 150px;
     margin-top: 8px;
 
 }
@@ -93,4 +93,22 @@ h3{
 
 .data{
     text-decoration: underline;
+}
+.input-row{
+    display: flex;
+    flex-direction: row;
+
+}
+
+select{
+    border: none;
+    background-color: white;
+    border-radius: 10px;
+    width: 40px;
+    margin-left: 5px;
+}
+.button-row{
+    display: flex;
+    flex-direction: row;
+    gap: 5px
 }

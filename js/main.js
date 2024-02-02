@@ -6,7 +6,7 @@ Vue.component('column', {
         <label for="card-name">Создайте название заметки:</label>
         <input  class="input" id="card-name" type="text" v-model="noteName" :disabled="checkedCount===5 && !checked"><br>
         <label for="selected-num">Поставьте приоритет</label>
-        <select v-model="selected" id="selected-num">
+        <select v-model="selected" id="selected-num" required :disabled="checkedCount===5 && !checked">
           <option disabled value="">Выберите один из вариантов</option>
           <option>1</option>
           <option>2</option>
@@ -115,6 +115,9 @@ Vue.component('column', {
     methods: {
 
         addNote() {
+            Array.prototype.insert = function ( index, ...items ) {
+                this.splice( index, 0, ...items );
+            };
             if(this.noteName !== '' && this.notesList.length < 3 && this.noteItems.every(item=>item.trim() !=='')) {
                 const items = this.noteItems;
                 if (items.length >= 3 && items.length <= 5) {
@@ -125,10 +128,20 @@ Vue.component('column', {
                         title: this.noteName,
                         items: allItems.map(item => ({text: item, completed: false}))
                     };
-                    this.notesList.push(newNote);
+                    if(this.selected==='1'){
+                        this.notesList.insert(0, newNote);
+                    }
+                    else if(this.selected==='2'){
+                        this.notesList.insert(1, newNote);
+                    }
+                    else{
+                        this.notesList.push(newNote);
+                    }
+
                     this.noteName = '';
                     this.noteItems = ['', '', ''];
                     this.addItems = [];
+                    this.selected = '';
                     this.moveCard(newNote);
                     this.saveLocalStorage();
                 }
@@ -168,7 +181,6 @@ Vue.component('column', {
                 this.notesListCompleted.push(note);
                 note.completedDate = new Date().toLocaleString();
                 this.saveLocalStorage();
-
             }
         },
         saveLocalStorage() {

@@ -5,7 +5,7 @@ Vue.component('column', {
     <form @submit.prevent="addNote">
         <label for="card-name">Создайте название заметки:</label>
         <input  class="input" id="card-name" type="text" v-model="noteName" :disabled="checkedCount===5 && !checked"><br>
-        <label for="selected-num">Поставьте приоритет</label>
+        <label for="selected-num">Поставьте приоритет:</label>
         <select v-model="selected" id="selected-num" required :disabled="checkedCount===5 && !checked">
           <option disabled value="">Выберите один из вариантов</option>
           <option>1</option>
@@ -31,7 +31,7 @@ Vue.component('column', {
             <div class="column">
                 <h2 class="title_column">Новые</h2>
                 <div v-for="note in notesList" :key="note.id" class="note">
-                    <span>{{ note.selected }}</span>
+                    <span class="num">{{ note.selected }}</span>
                     <h3>{{ note.title }}</h3>
                     <div>
                         <ul>
@@ -108,8 +108,6 @@ Vue.component('column', {
                 localStorage.removeItem('notesListCompleted');
             }
         }
-
-
     },
 
     methods: {
@@ -128,13 +126,12 @@ Vue.component('column', {
                         title: this.noteName,
                         items: allItems.map(item => ({text: item, completed: false}))
                     };
-                    if(this.selected==='1'){
+
+                    if (this.selected === '1') {
                         this.notesList.insert(0, newNote);
-                    }
-                    else if(this.selected==='2'){
+                    } else if (this.selected === '2') {
                         this.notesList.insert(1, newNote);
-                    }
-                    else{
+                    } else {
                         this.notesList.push(newNote);
                     }
 
@@ -144,11 +141,13 @@ Vue.component('column', {
                     this.selected = '';
                     this.moveCard(newNote);
                     this.saveLocalStorage();
+
                 }
             }else {
-                alert('Добавте пункты задачи')
+                alert('Добавьте пункты задачи')
 
             }
+
         },
         addItem(){
             if(this.addItems.length<2){

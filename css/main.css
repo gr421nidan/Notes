@@ -112,3 +112,8 @@ select{
     flex-direction: row;
     gap: 5px
 }
+
+.num{
+    color: #656565;
+    font-size: 24px;
+}
